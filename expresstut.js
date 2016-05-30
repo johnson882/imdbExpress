@@ -1,10 +1,24 @@
+
 //Session Commit
+
 var express = require('express');
 var handlebars = require('express-handlebars');
 //var cookieParser = require('cookie-parser');
 var session = require("express-session");
+var pgp = require('pg-promise')();
 var app = express();
 
+//database connection object
+var cn = {
+	host: 'localhost',
+	port: '5432',
+	database: 'postgres',
+	user: 'postgres',
+	password: ''
+
+};
+
+var db = pgp(cn);
 //app.disable('x-powered-by');
 
 
@@ -28,6 +42,20 @@ app.get('/', function(req,res){
 app.get('/removeCookie', function(req,res){
   res.clearCookie('Ian', "MyPassword123");
   res.end('cookies Removed');
+});
+
+app.get('/postQuery', function(req, res){
+	db.one("select * from site_users").then(function (data){
+	  //success!
+	  res.send(data);
+	})
+	.catch(function (error){
+	  //error;
+	  res.send("error!");
+	});
+	//var aQuery = db.query('select * from site_users');
+	//res.send("done!" + aQuery);
+	//res.send(aQuery);
 });
 
 
