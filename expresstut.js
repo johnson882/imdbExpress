@@ -30,7 +30,7 @@ app.set('view engine', 'handlebars');
 
 app.use('/public', express.static('public'));
 //app.use(cookieParser());
-app.use(session({resave: true, saveUninitialized: true, secret: "asdfga"}));
+app.use(session({resave: true, saveUninitialized: true, secret: "gstyltklfdfga"}));
 
 app.get('/', function(req,res){
  //res.send("this is a test the server is working!"); // this is how to send text
@@ -39,19 +39,26 @@ app.get('/', function(req,res){
   
 });
 
+app.get('/dashboard', function(req,res){
+	//if(loggedin)
+	//{r}
+});
+
 app.get('/removeCookie', function(req,res){
   res.clearCookie('Ian', "MyPassword123");
   res.end('cookies Removed');
 });
 
 app.get('/postQuery', function(req, res){
-	db.one("select * from site_users").then(function (data){
+	db.any("select * from site_users;").then(function (data){
 	  //success!
-	  res.send(data);
+	  var username = data;
+	  res.send(username[0]);
+	 
 	})
 	.catch(function (error){
 	  //error;
-	  res.send("error!");
+	  res.send(error);
 	});
 	//var aQuery = db.query('select * from site_users');
 	//res.send("done!" + aQuery);

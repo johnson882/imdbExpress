@@ -15,6 +15,6 @@
     "express-handlebars": "^3.0.0",
     "express-session": "^1.13.0",
     "handlebars": "^4.0.5",
-    "pg-promise": "^4.3.4"
+    "pg-promise": "^4.3.5"
   }
 }
