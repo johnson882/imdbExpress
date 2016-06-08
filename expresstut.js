@@ -2,9 +2,10 @@
 //Session Commit
 
 var express = require('express');
+var bodyparser = require("body-parser");
 var handlebars = require('express-handlebars');
 //var cookieParser = require('cookie-parser');
-var session = require("express-session");
+var sessions = require("express-session");
 var pgp = require('pg-promise')();
 var app = express();
 
@@ -18,6 +19,7 @@ var cn = {
 
 };
 
+var session;
 var db = pgp(cn);
 //app.disable('x-powered-by');
 
@@ -30,18 +32,30 @@ app.set('view engine', 'handlebars');
 
 app.use('/public', express.static('public'));
 //app.use(cookieParser());
-app.use(session({resave: true, saveUninitialized: true, secret: "gstyltklfdfga"}));
+app.use(sessions({resave: true, saveUninitialized: true, secret: "gstyltklfdfga"}));
 
 app.get('/', function(req,res){
- //res.send("this is a test the server is working!"); // this is how to send text
-  res.cookie('Ian', "MyPassword123");
   res.render('home');
+ //res.send("this is a test the server is working!"); // this is how to send text
+  // console.log('Username: ' + req.body.username);
   
+  //res.cookie('Ian', "MyPassword123");
+
+ // res.send('home');
+ /*
+  if(res.body.username == 'ian' && res.body.password == 'password')
+  {
+  //res.send(res.body.username);
+  //res.redirect('about');
+  }
+ //res.send('Password: ' + req.body.password);
+  */
 });
 
-app.get('/dashboard', function(req,res){
+app.get('/dashboard', function(req, res){
 	//if(loggedin)
 	//{r}
+	res.status(404).send("cant do it");
 });
 
 app.get('/removeCookie', function(req,res){
@@ -82,6 +96,7 @@ app.get('/about', function(req, res){
 });
 
 //404 catch-all handler(middleware)
+
 app.use(function(req, res, next){
 res.status(404);
 res.render('404');
