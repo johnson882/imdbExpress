@@ -11,11 +11,20 @@ var app = express();
 
 //database connection object
 var cn = {
+/*
 	host: 'localhost',
 	port: '5432',
 	database: 'postgres',
 	user: 'postgres',
 	password: ''
+	*/ // for laptop postresql
+	
+	host: 'localhost',
+	port: '5432',
+	database: 'IMDB',
+	user: 'postgres',
+	password: 'john11' // desktop database
+	
 
 };
 
