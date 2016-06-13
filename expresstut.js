@@ -2,7 +2,7 @@
 //Session Commit
 
 var express = require('express');
-var bodyparser = require("body-parser");
+var bodyParser = require("body-parser");
 var handlebars = require('express-handlebars');
 //var cookieParser = require('cookie-parser');
 var sessions = require("express-session");
@@ -11,20 +11,21 @@ var app = express();
 
 //database connection object
 var cn = {
-/*
+
 	host: 'localhost',
 	port: '5432',
 	database: 'postgres',
 	user: 'postgres',
 	password: ''
-	*/ // for laptop postresql
+	 // for laptop postresql
 	
+	/*
 	host: 'localhost',
 	port: '5432',
 	database: 'IMDB',
 	user: 'postgres',
 	password: 'john11' // desktop database
-	
+	*/
 
 };
 
@@ -41,11 +42,17 @@ app.set('view engine', 'handlebars');
 
 app.use('/public', express.static('public'));
 //app.use(cookieParser());
-app.use(sessions({resave: true, saveUninitialized: true, secret: "gstyltklfdfga"}));
+app.use(sessions({resave: false, saveUninitialized: true, secret: "gs39tyl65tklfdfga"}));
+app.use(bodyParser());
+
 
 app.get('/', function(req,res){
-  res.render('home');
- //res.send("this is a test the server is working!"); // this is how to send text
+ //res.body.username = "ian";
+ res.render('home');
+ 
+
+ 
+
   // console.log('Username: ' + req.body.username);
   
   //res.cookie('Ian', "MyPassword123");
@@ -61,10 +68,32 @@ app.get('/', function(req,res){
   */
 });
 
+app.post('/', function(req, res){
+var userName = req.body.userName;
+//res.redirect('dashboard');
+var html = 'Hello: ' + userName + '.<br>' +
+             '<a href="/">Try again.</a>';
+ // res.send(html);
+ req.session.user = userName;
+res.redirect('dashboard');
+});
+
+
+app.post('/login', function(req, res){
+  var username = "ian";
+  var password = "pass";
+  req.session.user = username;
+});
+
+
 app.get('/dashboard', function(req, res){
-	//if(loggedin)
-	//{r}
-	res.status(404).send("cant do it");
+	
+	var userName = req.session.user;
+
+var html = 'Hello: ' + userName + '.<br>' +
+             '<a href="/">Try again.</a>';
+	res.send(html);
+	
 });
 
 app.get('/removeCookie', function(req,res){
@@ -136,12 +165,3 @@ var fortunes = ["You will win money in your next gambling experience",
 				"never give up and you will do great!",
 				"you will get a great surprise tomorrow at 2:00PM",
 				"what ever you do keep things simple!"];
-/*
-app.get('/', function(req,res){
-  res.send('Express Works');
-});
-
-app.listen(app.get('port'), function(){
-  console.log('Express started press Ctrl-c to terminate');
-});
-*/
