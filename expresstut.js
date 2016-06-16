@@ -9,23 +9,36 @@ var sessions = require("express-session");
 var pgp = require('pg-promise')();
 var app = express();
 
+//globals
+
+
+function isEmpty(obj) {
+    for(var prop in obj) {
+        if(obj.hasOwnProperty(prop))
+            return false;
+    }
+
+    return true;
+}
+
+
 //database connection object
 var cn = {
-
+/*
 	host: 'localhost',
 	port: '5432',
 	database: 'postgres',
 	user: 'postgres',
 	password: ''
 	 // for laptop postresql
+	*/
 	
-	/*
 	host: 'localhost',
 	port: '5432',
 	database: 'IMDB',
 	user: 'postgres',
 	password: 'john11' // desktop database
-	*/
+	
 
 };
 
@@ -70,12 +83,49 @@ app.get('/', function(req,res){
 
 app.post('/', function(req, res){
 var userName = req.body.userName;
-//res.redirect('dashboard');
-var html = 'Hello: ' + userName + '.<br>' +
-             '<a href="/">Try again.</a>';
- // res.send(html);
- req.session.user = userName;
-res.redirect('dashboard');
+var passWord = req.body.password;
+var theData;
+var dataP;
+
+
+db.any("select tuser, pass from site_users where tuser = '" + userName + "';").then(function (data){
+	  //success!
+	   theData = data;
+	   
+	 // var databasePassword = theData[0].pass;
+	  
+	  //res.send(passWord.valueOf() == databasepassword.valueOf());
+	  //res.send(passWord);
+	  if(isEmpty(theData[0]))
+	  {
+	  
+	  var  html = 'No Username Found .<br>' +
+		'<a href="/">Try again.</a>';
+		res.send(html);
+	 // res.send(theData[0].pass.localCompare(passWord) != 0);
+	    
+	  }
+
+	  //compare = dataP == passWord;
+	  //res.send(dataP != passWord);
+	  dataP = theData[0].pass.toString('utf-8').trim();
+	  if(dataP != passWord)
+	  {
+	    var  html = 'Wrong password .<br>' +
+		'<a href="/">Try again.</a>';
+		res.send(html);
+	  }
+	 else
+	 {
+	    req.session.user = userName;
+		req.session.pass = passWord;
+		res.redirect('dashboard');
+	 }
+	})
+	.catch(function (error){
+	  //error;
+	 res.send(error);
+	});
 });
 
 
@@ -89,9 +139,10 @@ app.post('/login', function(req, res){
 app.get('/dashboard', function(req, res){
 	
 	var userName = req.session.user;
+	var password = req.session.pass;
 
-var html = 'Hello: ' + userName + '.<br>' +
-             '<a href="/">Try again.</a>';
+var html = 'Hello: ' + userName + '.<br>' + 'Welcome your password is ' + password + '.<br>' 
+             '<a href="/about">Try again.</a>';
 	res.send(html);
 	
 });
@@ -102,17 +153,23 @@ app.get('/removeCookie', function(req,res){
 });
 
 app.get('/postQuery', function(req, res){
-	db.any("select * from site_users;").then(function (data){
+var name = "Bill Johnson";
+var password = "balls";
+	db.any("select tuser, pass from site_users where tuser = '" + name + "' and pass = '" + password + "' ;").then(function (data){
 	  //success!
 	  var username = data;
-	  res.send(username[0]);
+	  if (username.tuser == name && username.pass != password)
+	  {
+	  res.send("password Wrong!");
+	  }
+	  res.send(username);
 	 
 	})
 	.catch(function (error){
 	  //error;
-	  res.send(error);
+	 res.send(error);
 	});
-	//var aQuery = db.query('select * from site_users');
+	//var aQuery = db.query('select * from site_users where tuser = "Bill Johnson"');
 	//res.send("done!" + aQuery);
 	//res.send(aQuery);
 });
