@@ -5,7 +5,7 @@ var express = require('express');
 var bodyParser = require("body-parser");
 var handlebars = require('express-handlebars');
 //var cookieParser = require('cookie-parser');
-var sessions = require("express-session");
+var session = require("express-session");
 var pgp = require('pg-promise')();
 var app = express();
 
@@ -42,7 +42,8 @@ var cn = {
 
 };
 
-var session;
+//var session;
+
 var db = pgp(cn);
 //app.disable('x-powered-by');
 
@@ -55,14 +56,15 @@ app.set('view engine', 'handlebars');
 
 app.use('/public', express.static('public'));
 //app.use(cookieParser());
-app.use(sessions({resave: false, saveUninitialized: true, secret: "gs39tyl65tklfdfga"}));
+app.use(session({resave: false, saveUninitialized: true, secret: "gs39tyl65tklfdfga"}));
 app.use(bodyParser());
 
 
 app.get('/', function(req,res){
  //res.body.username = "ian";
+ 	
  res.render('home');
- 
+
 
  
 
@@ -84,6 +86,7 @@ app.get('/', function(req,res){
 app.post('/', function(req, res){
 var userName = req.body.userName;
 var passWord = req.body.password;
+
 var theData;
 var dataP;
 
@@ -119,6 +122,7 @@ db.any("select tuser, pass from site_users where tuser = '" + userName + "';").t
 	 {
 	    req.session.user = userName;
 		req.session.pass = passWord;
+		req.session.success = true;
 		res.redirect('dashboard');
 	 }
 	})
@@ -129,22 +133,109 @@ db.any("select tuser, pass from site_users where tuser = '" + userName + "';").t
 });
 
 
-app.post('/login', function(req, res){
-  var username = "ian";
-  var password = "pass";
-  req.session.user = username;
+app.get('/dashboard', function(req, res,next){
+	//var userName = req.session.user;
+	//var password = req.session.pass;
+	//var search = req.query.search;
+	//console.log(search);
+	
+	res.render('dashboard');
+	/*
+	if(!req.session.success){
+	  
+	  res.send("");
+	}
+	else if(req.session.success){
+	if(!isEmpty(search))
+	{
+	  //res.send("searching!");
+	 
+	 next();
+	}
+	
+	req.session.visitcount++;
+	var html = 'Hello: ' + userName + '.<br>' + 'Welcome your password is ' + password + '.<br>' 
+             '<a href="/about">Try again.</a>';
+	res.render('dashboard', {userName});
+	}
+	*/
+
+	
 });
 
+app.get('/dashboard:search', function(req, res){
 
-app.get('/dashboard', function(req, res){
+
+  db.any("select m.media_name, a.actor_name FROM media m, actors a, appearances1 ap WHERE m.id = ap.media_id and a.id = ap.actor_id and a.actor_name = '" + req.query.search +"';").then(function(data){
+  
+   
+   res.render('search', {"data" : data});
+  }).catch(function(error){
+  res.send(error);
+  });
+  
+  
+  
+  
+  
+  
+  
+
+  //res.send('search:' + req.query.search);
+});
+
+app.post('/dashboard', function(req, res){
+var search = req.body.search;
+
+}
+);
+app.get('/logout', function(req, res){
+
+req.session.destroy();
+//return req.status(200).send();
+
+});
+
+app.get('/signup', function(req,res){
+	res.render('signup');
+});
+
+app.post('/signup', function(req, res){
+	var email = req.body.email;
+	var email2 = req.body.email2;
+	var password = req.body.password;
+	var password2 = req.body.password2;
+	var username = req.body.username;
 	
-	var userName = req.session.user;
-	var password = req.session.pass;
-
-var html = 'Hello: ' + userName + '.<br>' + 'Welcome your password is ' + password + '.<br>' 
-             '<a href="/about">Try again.</a>';
+	
+	db.any("select tuser, pass, email from site_users where tuser = '" + username + "' or email = '" + email + "';").then(function (data){
+	
+	if(isEmpty(data) == false){
+	var html = 'username or password already exists .<br> <a href="/signup">Try again.</a>'; 
+	//'<a href="/signup">Try again.</a>'; 
+	res.send(html);
+	}
+	
+	
+	
+	//res.send(data);
+	}).catch(function (error){
+	res.send(error);
+	console.log(error);
+	});
+	
+	//if username doesnt exist then..
+	db.any("insert into site_users(tuser, pass, email) values ('" + username + "', '" + password + "', '" + email + "');").then(function (data){
+	var html = 'username inserted!';
 	res.send(html);
 	
+	}).catch(function (error){
+	res.send(error);
+	console.log(error);
+	});
+	//res.redirect('/dashboard');
+
+
 });
 
 app.get('/removeCookie', function(req,res){
