@@ -60,10 +60,21 @@ app.use(session({resave: false, saveUninitialized: true, secret: "gs39tyl65tklfd
 app.use(bodyParser());
 
 
+
 app.get('/', function(req,res){
+if(req.session.success){
+	  
+	  res.redirect('/dashboard');
+	}
+else{
+res.render('home');
+}
+});
+
+app.get('/signin', function(req,res){
  //res.body.username = "ian";
  	
- res.render('home');
+ res.render('signin');
 
 
  
@@ -83,7 +94,7 @@ app.get('/', function(req,res){
   */
 });
 
-app.post('/', function(req, res){
+app.post('/signin', function(req, res){
 var userName = req.body.userName;
 var passWord = req.body.password;
 
@@ -134,13 +145,13 @@ db.any("select tuser, pass from site_users where tuser = '" + userName + "';").t
 
 
 app.get('/dashboard', function(req, res,next){
-	//var userName = req.session.user;
-	//var password = req.session.pass;
-	//var search = req.query.search;
+	var userName = req.session.user;
+	var password = req.session.pass;
+	var search = req.query.search;
 	//console.log(search);
 	
-	res.render('dashboard');
-	/*
+	//res.render('dashboard');
+	
 	if(!req.session.success){
 	  
 	  res.send("");
@@ -158,7 +169,7 @@ app.get('/dashboard', function(req, res,next){
              '<a href="/about">Try again.</a>';
 	res.render('dashboard', {userName});
 	}
-	*/
+	
 
 	
 });
@@ -234,6 +245,16 @@ app.post('/signup', function(req, res){
 	console.log(error);
 	});
 	//res.redirect('/dashboard');
+
+
+});
+
+app.get('/signout', function(req, res){
+
+req.session.success = false;
+req.session.username = null;
+req.session.pass = null
+res.render('signout');
 
 
 });

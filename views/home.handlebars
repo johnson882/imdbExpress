@@ -1,14 +1,23 @@
 
 <div class ="page-header">
-<h3>Welcome to Movie Lookup Data Base</h3>
+
 
 </div>
 
 <div>
-<h1> This is the forum</h1>
-<form action="/" method = "post">
-username: <input type="text" name="userName"><br>
-password: <input type="text" name="password"> <br>
+<h1> Welcome to your Movie Databse lookup </h1>
+<form action="/dashboard:search" method = "get">
+Actor Search: <input type="text" name="search"><br>
 <input type="submit">
 </form>
 </div>
+
+<form action="/dashboard:search" method = "get">
+Movie Search: <input type="text" name="Msearch"><br>
+<input type="submit">
+</form>
+
+<form action="/dashboard:search" method = "get">
+Role Search: <input type="text" name="Rsearch"><br>
+<input type="submit">
+</form>
