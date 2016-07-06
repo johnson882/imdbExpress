@@ -176,7 +176,7 @@ app.get('/dashboard', function(req, res,next){
 
 app.get('/dashboard:search', function(req, res){
 
-
+if(req.query.search){
   db.any("select m.media_name, a.actor_name FROM media m, actors a, appearances1 ap WHERE m.id = ap.media_id and a.id = ap.actor_id and a.actor_name = '" + req.query.search +"';").then(function(data){
   
    
@@ -185,15 +185,25 @@ app.get('/dashboard:search', function(req, res){
   res.send(error);
   });
   
-  
-  
-  
-  
-  
-  
 
   //res.send('search:' + req.query.search);
-});
+} 
+else if(req.query.Msearch){
+  db.any("select m.media_name, a.actor_name FROM media m, actors a, appearances1 ap WHERE m.id = ap.media_id and a.id = ap.actor_id and m.media_name = '" + req.query.Msearch + "';").then(function(data){
+  
+   
+   res.render('search', {"data" : data});
+  }).catch(function(error){
+  res.send(error);
+  });
+
+}
+
+else{
+res.send("Role Search");
+}
+
+}); // end /dashboard:seach
 
 app.post('/dashboard', function(req, res){
 var search = req.body.search;
