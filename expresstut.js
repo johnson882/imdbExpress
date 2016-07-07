@@ -200,7 +200,13 @@ else if(req.query.Msearch){
 }
 
 else{
-res.send("Role Search");
+db.any("select r.role_name, m.media_name, a.actor_name FROM media m, actors a, appearances1 ap, roles r WHERE m.id = ap.media_id and a.id = ap.actor_id and  r.id = ap.role_id and r.id = ap.role_id and r.role_name = '" + req.query.Rsearch +"';").then(function(data){
+  
+   
+   res.render('search', {"data" : data});
+  }).catch(function(error){
+  res.send(error);
+  });
 }
 
 }); // end /dashboard:seach
