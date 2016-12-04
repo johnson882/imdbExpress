@@ -1,11 +1,25 @@
 
 <div class ="page-header">
-<h3>Welcome to Movie Lookup Data Base</h3>
+{{#each data}}
+{{#if @first}}
+<h3>{{this.medianame}}</h3>
+{{/if}}
+{{/each}}
 
 </div>
-{{data.media_name}} <br>
+
+ <br>
+ <span>
+ <h2> Cast </h2>
+ 
+ 
+ 
+ </span>
+ 
 {{#each data}}
-{{this.actor_name}}  &nbsp;{{this.role_name}}  &nbsp;{{this.media_name}}<br>
+
+{{this.firstname}} {{this.lastname}} * {{this.rolename}}  <br>
+<br>
 {{/each}}
 <div>
 

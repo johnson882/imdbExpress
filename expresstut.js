@@ -11,6 +11,14 @@ var app = express();
 
 //globals
 
+var testData = []
+
+testData.push({
+	key: "keyname",
+	value: "the value"
+
+})
+
 
 function isEmpty(obj) {
     for(var prop in obj) {
@@ -31,14 +39,19 @@ var cn = {
 	user: 'postgres',
 	password: ''
 	 // for laptop postresql
-	*/
+	
 	
 	host: 'localhost',
-	port: '5432',
-	database: 'IMDB',
+	port: 5432,
+	database: 'postgres',
 	user: 'postgres',
-	password: 'john11' // desktop database
-	
+	password: 'john11john' // desktop database
+	*/
+	host: 'mydbinstance.co8wdi0xjaxc.us-west-1.rds.amazonaws.com',
+	port: 5432,
+	database: 'postgres',
+	user: 'ianuser',
+	password: 'userian323' // desktop database
 
 };
 
@@ -100,6 +113,7 @@ var passWord = req.body.password;
 
 var theData;
 var dataP;
+var data;
 
 
 db.any("select tuser, pass from site_users where tuser = '" + userName + "';").then(function (data){
@@ -177,7 +191,7 @@ app.get('/dashboard', function(req, res,next){
 app.get('/dashboard:search', function(req, res){
 
 if(req.query.search){
-  db.any("select m.media_name, a.actor_name FROM media m, actors a, appearances1 ap WHERE m.id = ap.media_id and a.id = ap.actor_id and a.actor_name = '" + req.query.search +"';").then(function(data){
+  db.any("select * WHERE m.id = ap.media_id and a.id = ap.actor_id and a.actor_name = '" + req.query.search +"';").then(function(data){
   
    
    res.render('search', {"data" : data});
@@ -189,10 +203,14 @@ if(req.query.search){
   //res.send('search:' + req.query.search);
 } 
 else if(req.query.Msearch){
-  db.any("select m.media_name, a.actor_name FROM media m, actors a, appearances1 ap WHERE m.id = ap.media_id and a.id = ap.actor_id and m.media_name = '" + req.query.Msearch + "';").then(function(data){
-  
-   
+  //var aSearch = req.query.Msearch;
+  //var res = aSearch.split(" ");
+  //db.any("select * FROM media m, actors a, appearances ap WHERE m.id = ap.media_id and a.id = ap.actor_id and m.medianame = '" + req.query.Msearch + "';").then(function(dataP){
+  db.any("select * FROM media m, actors a, role r, appearances ap WHERE m.id = ap.media_id and r.id = ap.role_id and a.id = ap.actor_id and m.medianame = '" + req.query.Msearch + "'  ;").then(function(data){
+  //db.any("select * FROM media m, actors a, role r, appearances ap WHERE m.id = ap.media_id and r.id = ap.role_id and a.id = ap.actor_id and m.medianame = '" + req.query.Msearch + "' or a.firstname ='" + res[0] + "' or a.lastname ='"+ res[1] +"' ;").then(function(data){
+    //console.log(data);
    res.render('search', {"data" : data});
+ // res.render( testData)
   }).catch(function(error){
   res.send(error);
   });
@@ -200,13 +218,14 @@ else if(req.query.Msearch){
 }
 
 else{
-db.any("select r.role_name, m.media_name, a.actor_name FROM media m, actors a, appearances1 ap, roles r WHERE m.id = ap.media_id and a.id = ap.actor_id and  r.id = ap.role_id and r.id = ap.role_id and r.role_name = '" + req.query.Rsearch +"';").then(function(data){
+/*db.any("select r.role_name, m.media_name, a.actor_name FROM media m, actors a, appearances1 ap, roles r WHERE m.id = ap.media_id and a.id = ap.actor_id and  r.id = ap.role_id and r.id = ap.role_id and r.role_name = '" + req.query.Rsearch +"';").then(function(data){
   
    
    res.render('search', {"data" : data});
   }).catch(function(error){
   res.send(error);
   });
+  */
 }
 
 }); // end /dashboard:seach
