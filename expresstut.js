@@ -191,7 +191,7 @@ app.get('/dashboard', function(req, res,next){
 app.get('/dashboard:search', function(req, res){
 
 if(req.query.search){
-  db.any("select * WHERE m.id = ap.media_id and a.id = ap.actor_id and a.actor_name = '" + req.query.search +"';").then(function(data){
+  db.any("select * from media m, actors a, appearances ap WHERE m.id = ap.media_id and a.id = ap.actor_id and a.firstname = '" + req.query.search +"';").then(function(data){
   
    
    res.render('search', {"data" : data});
