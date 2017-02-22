@@ -17,6 +17,7 @@ testData.push({
 	key: "keyname",
 	value: "the value"
 
+	
 })
 
 
@@ -29,7 +30,12 @@ function isEmpty(obj) {
     return true;
 }
 
-
+function splitName(obj) {
+    if (isEmpty(obj)) return false;
+	var  name = obj.split(" ");
+	return name; 
+	
+}
 //database connection object
 var cn = {
 /*
@@ -189,9 +195,10 @@ app.get('/dashboard', function(req, res,next){
 });
 
 app.get('/dashboard:search', function(req, res){
+var name;
 
-if(req.query.search){
-  db.any("select * from media m, actors a, appearances ap WHERE m.id = ap.media_id and a.id = ap.actor_id and a.firstname = '" + req.query.search +"';").then(function(data){
+if( name = splitName(req.query.search)){
+  db.any("select * from media m, actors a, appearances ap WHERE m.id = ap.media_id and a.id = ap.actor_id and a.firstname = '" + name[0] +"' and a.lastname = '" +name[1]+"';").then(function(data){
   
    
    res.render('search', {"data" : data});
@@ -203,12 +210,9 @@ if(req.query.search){
   //res.send('search:' + req.query.search);
 } 
 else if(req.query.Msearch){
-  //var aSearch = req.query.Msearch;
-  //var res = aSearch.split(" ");
-  //db.any("select * FROM media m, actors a, appearances ap WHERE m.id = ap.media_id and a.id = ap.actor_id and m.medianame = '" + req.query.Msearch + "';").then(function(dataP){
+  
   db.any("select * FROM media m, actors a, role r, appearances ap WHERE m.id = ap.media_id and r.id = ap.role_id and a.id = ap.actor_id and m.medianame = '" + req.query.Msearch + "'  ;").then(function(data){
-  //db.any("select * FROM media m, actors a, role r, appearances ap WHERE m.id = ap.media_id and r.id = ap.role_id and a.id = ap.actor_id and m.medianame = '" + req.query.Msearch + "' or a.firstname ='" + res[0] + "' or a.lastname ='"+ res[1] +"' ;").then(function(data){
-    //console.log(data);
+ 
    res.render('search', {"data" : data});
  // res.render( testData)
   }).catch(function(error){
