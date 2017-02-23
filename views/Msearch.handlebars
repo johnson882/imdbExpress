@@ -1,0 +1,28 @@
+<script language = "javascript" type= "text/javascript">
+</script>
+<div class ="page-header">
+{{#each data}}
+{{#if @first}}
+<h3>{{this.medianame}}</h3>
+{{/if}}
+{{/each}}
+
+</div>
+
+ <br>
+ <span>
+ <h2> Cast </h2>
+ 
+ 
+ 
+ </span>
+ 
+{{#each data}}
+
+<!-- must figure out how to add the javascript variable into this link -->
+<a href = "/dashboard:search?Msearch=this.medianame" id="this.medianame">{{this.medianame}} </a> - {{this.year}} <br>
+<br>
+{{/each}}
+<div>
+
+</div>

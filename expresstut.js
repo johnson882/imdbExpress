@@ -194,14 +194,14 @@ app.get('/dashboard', function(req, res,next){
 	
 });
 
-app.get('/dashboard:search', function(req, res){
+app.get('/dashboard:Asearch', function(req, res){
 var name;
 
 if( name = splitName(req.query.search)){
   db.any("select * from media m, actors a, appearances ap WHERE m.id = ap.media_id and a.id = ap.actor_id and a.firstname = '" + name[0] +"' and a.lastname = '" +name[1]+"';").then(function(data){
   
    
-   res.render('search', {"data" : data});
+   res.render('Asearch', {"data" : data});
   }).catch(function(error){
   res.send(error);
   });
@@ -211,9 +211,15 @@ if( name = splitName(req.query.search)){
 } 
 else if(req.query.Msearch){
   
-  db.any("select * FROM media m, actors a, role r, appearances ap WHERE m.id = ap.media_id and r.id = ap.role_id and a.id = ap.actor_id and m.medianame = '" + req.query.Msearch + "'  ;").then(function(data){
+  db.any(
+  
+  /*"select * FROM media m, actors a, role r, appearances ap WHERE m.id = ap.media_id and r.id = ap.role_id and a.id = ap.actor_id and m.medianame = '" + req.query.Msearch + "'  ;"
+  */
+  
+  "select * from media m where medianame = '"  + req.query.Msearch+  "' ;"
+  ).then(function(data){
  
-   res.render('search', {"data" : data});
+   res.render('Msearch', {"data" : data});
  // res.render( testData)
   }).catch(function(error){
   res.send(error);
