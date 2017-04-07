@@ -80,6 +80,7 @@ app.use(bodyParser());
 
 
 
+
 app.get('/', function(req,res){
 if(req.session.success){
 	  
@@ -194,6 +195,24 @@ app.get('/dashboard', function(req, res,next){
 	
 });
 
+app.get('/dashboard/:userId/:id', function(req,res){
+	
+	//if(req.param.idSearch == 10){
+		//res.end( req.params.id);
+		//if(req.params.id != null){
+		    db.any("select * from media m, actors a, role r, appearances ap WHERE m.id = ap.media_id and r.id = ap.role_id and a.id = ap.actor_id and m.id = '" + req.params.id + "';").then(function(data){
+  
+   
+		     res.render('Asearch', {"data" : data});
+		    }).catch(function(error){
+		    res.send(error);
+		    });
+	//	}
+		//}
+	
+	
+}); 
+
 app.get('/dashboard:Asearch', function(req, res){
 var name;
 
@@ -227,6 +246,8 @@ else if(req.query.Msearch){
 
 }
 
+
+
 else{
 /*db.any("select r.role_name, m.media_name, a.actor_name FROM media m, actors a, appearances1 ap, roles r WHERE m.id = ap.media_id and a.id = ap.actor_id and  r.id = ap.role_id and r.id = ap.role_id and r.role_name = '" + req.query.Rsearch +"';").then(function(data){
   
@@ -239,6 +260,9 @@ else{
 }
 
 }); // end /dashboard:seach
+
+
+
 
 app.post('/dashboard', function(req, res){
 var search = req.body.search;
