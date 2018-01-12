@@ -1,6 +1,9 @@
 {
   "name": "ian",
   "version": "1.0.0",
+  "engines": {
+    "node": "6.9.5"
+  },
   "private": true,
   "description": "Express Tutorial",
   "main": "expresstut.js",
